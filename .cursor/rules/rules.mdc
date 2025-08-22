@@ -1,0 +1,156 @@
+Detailed MVP Plan (KrishiGPT in 4 Hours)
+🎯 MVP Goal
+
+Show a demo where a user can:
+
+Open a simple web app (Next.js).
+
+Type a farming-related question (e.g., "How to improve wheat yield?").
+
+Get an answer back from the backend (FastAPI), which either:
+
+Calls Gemini API, OR
+
+Returns a mocked/fake AI response if integration is too slow.
+
+That’s it. No user accounts, no chat history DB, no images, no deployment polish.
+
+🔹 Hour 1 – Backend First (FastAPI)
+
+Objective: Have a single working /ask endpoint that takes a text question and returns a text answer.
+
+Define endpoint
+
+Create /ask route in FastAPI that accepts JSON { question: "..." }.
+
+Respond with { answer: "..." }.
+
+For MVP, you can either:
+
+Mock response ("Here’s a farming tip..."), OR
+
+Integrate Gemini/OpenAI if you already have an API key and can test quickly.
+
+Run locally
+
+Start FastAPI server (uvicorn).
+
+Test endpoint with Postman or curl.
+
+Stretch (if time allows): Add CORS so frontend can talk to it.
+
+🔹 Hour 2 – Frontend (Next.js + Tailwind)
+
+Objective: Have a minimal UI where the user can input a question and display the backend’s answer.
+
+UI Layout
+
+A centered page with:
+
+Title ("🌾 KrishiGPT")
+
+Input box (for question)
+
+Button ("Ask")
+
+Answer box (below)
+
+State Management
+
+Keep track of:
+
+User input (question)
+
+Server response (answer)
+
+Connect to backend
+
+Set up a proxy in Next.js (/api/ask → FastAPI /ask).
+
+On button click:
+
+Send POST request with question.
+
+Display the answer.
+
+Tailwind Styling
+
+Use simple, clean, minimal design.
+
+Green button, white background, big text.
+
+No need for complex CSS.
+
+🔹 Hour 3 – Integration & Testing
+
+Objective: Make frontend and backend actually talk to each other.
+
+Run both servers
+
+Backend on port 8000.
+
+Frontend on port 3000.
+
+Proxy check
+
+Ensure requests from frontend hit backend correctly.
+
+Debug CORS issues if not using proxy.
+
+End-to-end test
+
+Type a question in frontend.
+
+Backend returns response.
+
+Answer shows up on screen.
+
+Polish
+
+Add loading state (“Thinking…”).
+
+Add error handling (“Something went wrong. Please try again.”).
+
+🔹 Hour 4 – Demo-Ready Polish
+
+Objective: Make it smooth and demo-able (even if rough under the hood).
+
+Branding
+
+Title: "KrishiGPT – AI Assistant for Farmers".
+
+Add small subtitle under title: "Ask farming questions and get instant AI tips".
+
+Mock vs Real AI
+
+If Gemini API works reliably → wire it in.
+
+If not → keep mock answers but phrase them smartly (e.g., "You asked about wheat yield. Farmers usually improve it with crop rotation and proper irrigation.").
+
+User Experience
+
+Show user’s question above the answer (feels more like chat).
+
+Auto-clear input after submit.
+
+Optional extras if time left
+
+Add simple “chat history” in frontend state (array of Q&As).
+
+Deploy quickly (e.g., vercel for frontend + ngrok/render for backend).
+
+🔥 Deliverables After 4 Hours
+
+A clickable web app (localhost or deployed) where:
+
+User enters a farming question.
+
+They get an AI (or mocked) response.
+
+Looks decent (thanks to Tailwind).
+
+Simple, focused, demo-able.---
+description:
+globs:
+alwaysApply: false
+---
