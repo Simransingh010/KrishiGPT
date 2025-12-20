@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+INSTALL.md
+setup_python.ps1
+.start.bat
+.start.ps1

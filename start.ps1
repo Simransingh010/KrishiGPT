@@ -35,7 +35,16 @@ try {
 
 Write-Host ""
 Write-Host "🚀 Starting Backend (FastAPI)..." -ForegroundColor Cyan
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd backend; python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+# Try to find Python 3.11 (where packages are installed)
+$python311 = "C:\Users\Anhad Tahseen\AppData\Local\Programs\Python\Python311\python.exe"
+if (Test-Path $python311) {
+    Write-Host "Using Python 3.11: $python311" -ForegroundColor Green
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD\backend'; & '$python311' -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+} else {
+    Write-Host "Python 3.11 not found, using default python" -ForegroundColor Yellow
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD\backend'; python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+}
 
 Write-Host "Waiting 5 seconds for backend to start..." -ForegroundColor Yellow
 Start-Sleep -Seconds 5

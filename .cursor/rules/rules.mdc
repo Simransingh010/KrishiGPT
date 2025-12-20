@@ -1,156 +1,316 @@
-Detailed MVP Plan (KrishiGPT in 4 Hours)
-🎯 MVP Goal
+Don’t default to useState
 
-Show a demo where a user can:
+If state:
 
-Open a simple web app (Next.js).
+Is derived → don’t store it
 
-Type a farming-related question (e.g., "How to improve wheat yield?").
+Is shared → lift or centralize it
 
-Get an answer back from the backend (FastAPI), which either:
+Is temporary UI → local state
 
-Calls Gemini API, OR
+Comes from server → server state, not React state
 
-Returns a mocked/fake AI response if integration is too slow.
+If you reach for useState without asking why, you’re already wrong.
 
-That’s it. No user accounts, no chat history DB, no images, no deployment polish.
+2. Never store derived state
 
-🔹 Hour 1 – Backend First (FastAPI)
+❌ Bad:
 
-Objective: Have a single working /ask endpoint that takes a text question and returns a text answer.
+const [fullName, setFullName] = useState(first + last);
 
-Define endpoint
 
-Create /ask route in FastAPI that accepts JSON { question: "..." }.
+✅ Correct:
 
-Respond with { answer: "..." }.
+const fullName = `${first} ${last}`;
 
-For MVP, you can either:
 
-Mock response ("Here’s a farming tip..."), OR
+Derived state causes desync bugs. Period.
 
-Integrate Gemini/OpenAI if you already have an API key and can test quickly.
+3. One source of truth, always
 
-Run locally
+If the same data exists:
 
-Start FastAPI server (uvicorn).
+in props
 
-Test endpoint with Postman or curl.
+in state
 
-Stretch (if time allows): Add CORS so frontend can talk to it.
+in context
 
-🔹 Hour 2 – Frontend (Next.js + Tailwind)
+You’ve created a bug, not a feature.
 
-Objective: Have a minimal UI where the user can input a question and display the backend’s answer.
+4. Lift state only when forced
 
-UI Layout
+If two siblings need data → lift
+If parent doesn’t use it → don’t lift
+If lifting makes parent dumb → create a hook
 
-A centered page with:
+5. Create custom hooks before Context
 
-Title ("🌾 KrishiGPT")
+90% of context usage is lazy engineering.
 
-Input box (for question)
+Rule:
 
-Button ("Ask")
+Logic reuse → custom hook
 
-Answer box (below)
+Global cross-app state → context
 
-State Management
+Server data → React Query / server actions
 
-Keep track of:
+6. Split state by reason, not by component
 
-User input (question)
+❌ Bad:
 
-Server response (answer)
+const [form, setForm] = useState({ name, email, loading });
 
-Connect to backend
 
-Set up a proxy in Next.js (/api/ask → FastAPI /ask).
+✅ Correct:
 
-On button click:
+const [values, setValues] = useState(...)
+const [isSubmitting, setIsSubmitting] = useState(false)
 
-Send POST request with question.
 
-Display the answer.
+State that changes together can live together. Everything else shouldn’t.
 
-Tailwind Styling
+7. Boolean explosion = design failure
 
-Use simple, clean, minimal design.
+If you have:
 
-Green button, white background, big text.
+isLoading
+isFetching
+isSubmitting
+isSaving
 
-No need for complex CSS.
 
-🔹 Hour 3 – Integration & Testing
+Replace with:
 
-Objective: Make frontend and backend actually talk to each other.
+status: 'idle' | 'loading' | 'success' | 'error'
 
-Run both servers
 
-Backend on port 8000.
+Finite State Machines win. Always.
 
-Frontend on port 3000.
+8. Prefer useReducer when state has transitions
 
-Proxy check
+If state changes depend on previous state → useReducer.
 
-Ensure requests from frontend hit backend correctly.
+If you’re writing:
 
-Debug CORS issues if not using proxy.
+setState(prev => ...)
 
-End-to-end test
 
-Type a question in frontend.
+more than twice — stop and refactor.
 
-Backend returns response.
+♻️ REUSABILITY (This separates seniors from juniors)
+9. Components should do one thing
 
-Answer shows up on screen.
+If a component:
 
-Polish
+fetches data
 
-Add loading state (“Thinking…”).
+formats data
 
-Add error handling (“Something went wrong. Please try again.”).
+renders UI
 
-🔹 Hour 4 – Demo-Ready Polish
+handles side effects
 
-Objective: Make it smooth and demo-able (even if rough under the hood).
+You wrote 4 components in one file.
 
-Branding
+10. Prefer composition over configuration
 
-Title: "KrishiGPT – AI Assistant for Farmers".
+❌ Bad:
 
-Add small subtitle under title: "Ask farming questions and get instant AI tips".
+<Button variant="primary" size="large" />
 
-Mock vs Real AI
 
-If Gemini API works reliably → wire it in.
+✅ Better:
 
-If not → keep mock answers but phrase them smartly (e.g., "You asked about wheat yield. Farmers usually improve it with crop rotation and proper irrigation.").
+<PrimaryButton />
 
-User Experience
 
-Show user’s question above the answer (feels more like chat).
+Configuration scales poorly. Composition scales forever.
 
-Auto-clear input after submit.
+11. Never hard-code side effects in components
 
-Optional extras if time left
+❌ Bad:
 
-Add simple “chat history” in frontend state (array of Q&As).
+useEffect(() => fetchData(), []);
 
-Deploy quickly (e.g., vercel for frontend + ngrok/render for backend).
 
-🔥 Deliverables After 4 Hours
+✅ Correct:
 
-A clickable web app (localhost or deployed) where:
+useFetchUsers()
 
-User enters a farming question.
 
-They get an AI (or mocked) response.
+Components render. Hooks orchestrate.
 
-Looks decent (thanks to Tailwind).
+12. Props should describe what, not how
 
-Simple, focused, demo-able.---
-description:
-globs:
-alwaysApply: false
----
+❌ Bad:
+
+onClickSubmitFormWithValidation()
+
+
+✅ Correct:
+
+onSubmit()
+
+
+Implementation details don’t belong in props.
+
+13. Avoid “utility components”
+
+If a component has no JSX logic → it’s not a component.
+
+Put it in:
+
+/lib
+
+/utils
+
+/services
+
+14. Prefer controlled components
+
+Uncontrolled inputs hide bugs. Controlled inputs expose them early.
+
+⚙️ EFFECTS & PERFORMANCE
+15. useEffect is not a lifecycle replacement
+
+If you’re thinking:
+
+“I’ll use useEffect when component loads”
+
+You’re thinking in Angular/React-2017 terms.
+
+Effects are for:
+
+syncing with external systems
+
+subscriptions
+
+imperative APIs
+
+Nothing else.
+
+16. Never suppress ESLint deps warnings
+
+If dependencies cause infinite loops → your logic is wrong, not ESLint.
+
+17. Don’t prematurely memoize
+
+useMemo and useCallback:
+
+are for performance bottlenecks
+
+not for “clean code”
+
+Wrong memoization makes apps slower.
+
+18. Memoize functions passed deep
+
+If a function travels more than 2 levels → memoize it.
+
+🧩 NEXT.JS SPECIFIC (App Router)
+19. Server Components by default
+
+Client components are opt-in, not default.
+
+If it doesn’t need:
+
+browser API
+
+state
+
+effects
+
+It does NOT belong in "use client".
+
+20. Fetch on the server unless proven otherwise
+
+Client fetching causes:
+
+loading waterfalls
+
+worse SEO
+
+duplicated logic
+
+Use:
+
+Server Actions
+
+fetch in server components
+
+21. Separate data loading from interaction
+
+Pattern:
+
+Page (server)
+ ├── DataFetcher (server)
+ │    └── ClientComponent
+
+
+Clean boundary. Predictable behavior.
+
+22. Never mutate props or server data
+
+If you do this — you don’t understand React.
+
+23. Don’t leak env or secrets to client
+
+If it’s in:
+
+NEXT_PUBLIC_*
+
+
+assume attackers can read it.
+
+🧱 ARCHITECTURE RULES
+24. Folder structure reflects responsibility
+
+Bad:
+
+components/
+
+
+Good:
+
+features/
+  auth/
+  dashboard/
+  payroll/
+shared/
+
+
+Structure should tell a story.
+
+25. UI ≠ Business Logic
+
+If you can’t move logic to a hook without breaking UI → bad design.
+
+26. No API calls in JSX files
+
+JSX files render. Services fetch.
+
+27. Types first, implementation second
+
+If you write code before types, you’ll rewrite it twice.
+
+28. Fail fast, loudly
+
+Silent failures create support tickets.
+
+Throw errors. Log aggressively. Handle boundaries.
+
+29. Readability > cleverness
+
+If someone can’t understand your code in 30 seconds, it’s bad code.
+
+30. Every abstraction must earn its existence
+
+If removing it:
+
+doesn’t break anything
+
+doesn’t increase duplication
+
+It shouldn’t exist.
