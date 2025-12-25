@@ -1,20 +1,23 @@
 "use client";
 
 import { ChatProvider } from "@/context/ChatContext";
-import Header from "@/components/Header/Header";
-import ConversationList from "@/components/ConversationList/ConversationList";
-import ChatWindow from "@/components/ChatWindow/ChatWindow";
+import AuthGuard from "@/components/auth/AuthGuard";
+import Header from "@/components/Header";
+import ConversationList from "@/components/ConversationList";
+import KrishiChatWindow from "@/components/KrishiChatWindow";
 
 export default function ChatPage() {
   return (
-    <ChatProvider>
-      <div className="h-screen flex flex-col bg-white">
-        <Header />
-        <div className="flex-1 flex overflow-hidden">
-          <ConversationList />
-          <ChatWindow />
+    <AuthGuard>
+      <ChatProvider>
+        <div className="h-screen flex flex-col bg-white dark:bg-slate-950">
+          <Header />
+          <div className="flex-1 flex overflow-hidden">
+            <ConversationList />
+            <KrishiChatWindow />
+          </div>
         </div>
-      </div>
-    </ChatProvider>
+      </ChatProvider>
+    </AuthGuard>
   );
 }

@@ -1,6 +1,6 @@
 # Python virtual environment
 backend/venv/
-
+install.md
 # Node modules
 backend/node_modules/
 frontend/node_modules/
@@ -18,7 +18,12 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+.kiro/
+.cursor/
+start.sh
 
 # OS
 .DS_Store
 Thumbs.db
+PROJECT_STATUS.md
+

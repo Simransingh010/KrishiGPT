@@ -7,8 +7,9 @@ interface StatusChip {
   id: string;
   label: string;
   value: string;
-  status: "good" | "moderate" | "warning" | "critical";
+  status: "good" | "moderate" | "warning" | "critical" | "danger";
   sublabel?: string;
+  icon?: string;
 }
 
 interface StatusChipsProps {
@@ -20,6 +21,7 @@ const statusColors = {
   moderate: "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border-amber-500/20",
   warning: "bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400 border-orange-500/20",
   critical: "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400 border-red-500/20",
+  danger: "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400 border-red-500/20",
 };
 
 const statusDot = {
@@ -27,6 +29,7 @@ const statusDot = {
   moderate: "bg-amber-500",
   warning: "bg-orange-500",
   critical: "bg-red-500",
+  danger: "bg-red-500",
 };
 
 export function StatusChips({ chips }: StatusChipsProps) {

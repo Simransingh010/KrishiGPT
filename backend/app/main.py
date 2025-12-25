@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel
 import google.generativeai as genai
 import os
@@ -8,25 +8,81 @@ from dotenv import load_dotenv
 import logging
 import json
 import asyncio
+import time
+from typing import Callable
 
 # Load environment variables
 load_dotenv()
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
+# Environment validation
+REQUIRED_ENV_VARS = ["GEMINI_API_KEY", "SUPABASE_URL", "SUPABASE_KEY"]
+missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
+if missing_vars:
+    logger.warning(f"Missing environment variables: {', '.join(missing_vars)}")
 
 # Initialize FastAPI app
 app = FastAPI(
     title="KrishiGPT API",
     description="AI Assistant for Farmers - Powered by Gemini",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
-# Add CORS middleware
+
+# Custom exception handler for validation errors
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception handler for unhandled errors"""
+    logger.error(f"Unhandled error: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={
+            "code": "INTERNAL_ERROR",
+            "message": "An unexpected error occurred. Please try again.",
+        }
+    )
+
+
+# Request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next: Callable):
+    """Log all requests with timing"""
+    start_time = time.time()
+    
+    # Process request
+    response = await call_next(request)
+    
+    # Calculate duration
+    duration = time.time() - start_time
+    
+    # Log request (skip health checks to reduce noise)
+    if request.url.path not in ["/health", "/", "/docs", "/openapi.json"]:
+        logger.info(
+            f"{request.method} {request.url.path} - "
+            f"Status: {response.status_code} - "
+            f"Duration: {duration:.3f}s"
+        )
+    
+    # Add timing header
+    response.headers["X-Response-Time"] = f"{duration:.3f}s"
+    
+    return response
+
+
+# CORS configuration
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,11 +91,19 @@ app.add_middleware(
 # Import and include routers
 from .routes.conversations import router as conversations_router
 from .routes.messages import router as messages_router
+from .routes.krishi import router as krishi_router
+from .routes.dashboard import router as dashboard_router
+from .routes.admin import router as admin_router
 
 app.include_router(conversations_router)
 app.include_router(messages_router)
+app.include_router(krishi_router)
+app.include_router(dashboard_router)
+app.include_router(admin_router)
 
-# Pydantic models
+# Pydantic models with validation
+from .utils.validation import ValidatedQuestionRequest
+
 class QuestionRequest(BaseModel):
     question: str
 
@@ -133,16 +197,22 @@ async def generate_stream(question: str):
         yield f"data: {error_data}\n\n"
 
 @app.post("/ask")
-async def ask_question(request: QuestionRequest):
+async def ask_question(request: Request, body: QuestionRequest):
+    """Stream AI response for farming questions"""
+    from .utils.rate_limit import check_rate_limit
+    from .utils.validation import validate_message_content, ValidationError
+    
+    # Rate limiting
+    check_rate_limit(request, "ai_query")
+    
     try:
-        question = request.question.strip()
-        if not question:
-            raise HTTPException(status_code=400, detail="Question cannot be empty")
+        # Validate input
+        question = validate_message_content(body.question)
         
         if not model:
             raise HTTPException(status_code=503, detail="Gemini API not configured")
         
-        logger.info(f"Received question: {question}")
+        logger.info(f"Received question: {question[:50]}...")
         
         return StreamingResponse(
             generate_stream(question),
@@ -153,7 +223,9 @@ async def ask_question(request: QuestionRequest):
                 "X-Accel-Buffering": "no"
             }
         )
-        
+    
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail={"code": e.code, "message": e.message})
     except HTTPException:
         raise
     except Exception as e:

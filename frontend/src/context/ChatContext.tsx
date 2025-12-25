@@ -1,11 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { useAuthContext } from "./AuthContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-// For now, use a mock user ID (replace with auth later)
-const MOCK_USER_ID = "00000000-0000-0000-0000-000000000001";
 
 export interface Conversation {
   id: string;
@@ -45,22 +43,36 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | null>(null);
 
 export function ChatProvider({ children }: { children: ReactNode }) {
+  const { userId: authUserId, isAuthenticated } = useAuthContext();
+
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const userId = MOCK_USER_ID;
+
+  // Use authenticated user ID or empty string
+  const userId = authUserId || "";
 
   const loadConversations = useCallback(async () => {
+    console.log("[ChatContext] Loading conversations...", { API_BASE_URL, userId });
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/api/conversations/user/${userId}`);
-      if (!res.ok) throw new Error("Failed to load conversations");
+      const url = `${API_BASE_URL}/api/conversations/user/${userId}`;
+      console.log("[ChatContext] Fetching:", url);
+      const res = await fetch(url);
+      console.log("[ChatContext] Response status:", res.status);
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("[ChatContext] Load conversations failed:", res.status, errorText);
+        throw new Error(`Failed to load conversations: ${res.status} ${errorText}`);
+      }
       const data = await res.json();
+      console.log("[ChatContext] Loaded conversations:", data.length);
       setConversations(data);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to load conversations";
+      console.error("[ChatContext] Error loading conversations:", err);
       setError(message);
     } finally {
       setLoading(false);
@@ -68,15 +80,29 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   const createConversation = useCallback(async (title?: string): Promise<Conversation | null> => {
+    console.log("[ChatContext] Creating conversation...", { API_BASE_URL, userId, title });
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/api/conversations`, {
+      const url = `${API_BASE_URL}/api/conversations`;
+      const body = JSON.stringify({ userId, title });
+      console.log("[ChatContext] POST:", url, body);
+
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, title }),
+        body,
       });
-      if (!res.ok) throw new Error("Failed to create conversation");
+
+      console.log("[ChatContext] Response status:", res.status);
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("[ChatContext] Create conversation failed:", res.status, errorText);
+        throw new Error(`Failed to create conversation: ${res.status} ${errorText}`);
+      }
+
       const data = await res.json();
+      console.log("[ChatContext] Created conversation:", data);
+
       const newConv: Conversation = {
         id: data.id,
         title: data.title,
@@ -89,6 +115,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       return newConv;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to create conversation";
+      console.error("[ChatContext] Error creating conversation:", err);
       setError(message);
       return null;
     } finally {
