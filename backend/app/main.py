@@ -32,7 +32,7 @@ if missing_vars:
 app = FastAPI(
     title="KrishiGPT API",
     description="AI Assistant for Farmers - Powered by Gemini",
-    version="1.0.0",
+    version="1.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
 )
