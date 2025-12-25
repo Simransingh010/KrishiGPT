@@ -84,7 +84,7 @@ export default function Header() {
                         href="/chat"
                         className="ml-2 px-6 py-2 bg-green-500 text-white text-sm font-medium rounded-full hover:bg-green-600 transition-colors"
                     >
-                        Let's talk!
+                        Let&apos;s talk!
                     </Link>
                 </nav>
 

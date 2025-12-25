@@ -47,7 +47,8 @@ function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[] = []) {
         mounted.current = true;
         refetch();
         return () => { mounted.current = false; };
-    }, deps);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [...deps, refetch]);
 
     return { data, status, error, refetch };
 }

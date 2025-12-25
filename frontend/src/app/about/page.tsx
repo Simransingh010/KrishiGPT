@@ -88,6 +88,7 @@ function HeroSection() {
                         transition={{ delay: 0.2 }}
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold mb-8"
                     >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="/logo.png" alt="" className="w-5 h-5" />
                         Empowering 140M+ Indian Farmers
                     </motion.div>
@@ -520,7 +521,7 @@ function TestimonialsSection() {
                             className="p-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700"
                         >
                             <p className="text-lg text-slate-700 dark:text-slate-300 italic mb-6">
-                                "{t.quote}"
+                                &ldquo;{t.quote}&rdquo;
                             </p>
                             <div className="flex items-center gap-4">
                                 <span className="text-4xl">{t.avatar}</span>
@@ -554,7 +555,7 @@ function CTASection() {
                         Ready to transform your farming?
                     </h2>
                     <p className="text-xl text-slate-600 dark:text-slate-400 mb-10">
-                        Join thousands of farmers already using KrishiGPT. It's free, easy, and available 24/7.
+                        Join thousands of farmers already using KrishiGPT. It&apos;s free, easy, and available 24/7.
                     </p>
                     <Link
                         href={chatLink}
@@ -579,6 +580,7 @@ function Footer() {
                 <div className="grid md:grid-cols-4 gap-12">
                     <div className="md:col-span-2">
                         <div className="mb-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src="/logo.png" alt="KrishiGPT" className="h-12 object-contain" />
                         </div>
                         <p className="text-slate-400 max-w-md">

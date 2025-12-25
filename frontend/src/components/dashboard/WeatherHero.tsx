@@ -106,7 +106,7 @@ export function WeatherHero({ data }: WeatherHeroProps) {
             transition={{ delay: 0.4 }}
             className="hidden sm:flex gap-4"
           >
-            {data.forecast.slice(0, 3).map((day, i) => (
+            {data.forecast.slice(0, 3).map((day) => (
               <div key={day.day} className="text-center">
                 <p className="text-xs text-white/70 dark:text-slate-300 uppercase tracking-wider font-medium">{day.day}</p>
                 <p className="text-xl my-1">{day.icon}</p>

@@ -66,20 +66,20 @@ export function MarketOverviewCard({ data, delay = 0, className }: MarketOvervie
         <ResponsiveContainer width="100%" height="100%" minWidth={200}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#334155" : "#f1f5f9"} />
-            <XAxis 
-              dataKey="month" 
+            <XAxis
+              dataKey="month"
               tick={{ fontSize: 11, fill: isDark ? "#94a3b8" : "#64748b" }}
               axisLine={{ stroke: isDark ? "#475569" : "#e2e8f0" }}
               tickLine={false}
             />
-            <YAxis 
+            <YAxis
               tick={{ fontSize: 11, fill: isDark ? "#94a3b8" : "#64748b" }}
               axisLine={{ stroke: isDark ? "#475569" : "#e2e8f0" }}
               tickLine={false}
               tickFormatter={(value) => `₹${(value / 1000).toFixed(1)}k`}
               domain={['dataMin - 200', 'dataMax + 200']}
             />
-            <Tooltip 
+            <Tooltip
               contentStyle={{
                 backgroundColor: isDark ? "#1e293b" : "#fff",
                 border: `1px solid ${isDark ? "#475569" : "#e2e8f0"}`,
@@ -87,41 +87,41 @@ export function MarketOverviewCard({ data, delay = 0, className }: MarketOvervie
                 fontSize: "12px",
                 color: isDark ? "#f1f5f9" : "#1f2937",
               }}
-              formatter={(value: number, name: string) => [`₹${value.toLocaleString("en-IN")}`, name.charAt(0).toUpperCase() + name.slice(1)]}
+              formatter={(value?: number, name?: string) => [`₹${(value ?? 0).toLocaleString("en-IN")}`, (name ?? "").charAt(0).toUpperCase() + (name ?? "").slice(1)]}
             />
-            <Line 
-              type="monotone" 
-              dataKey="wheat" 
-              stroke={commodityColors.wheat} 
+            <Line
+              type="monotone"
+              dataKey="wheat"
+              stroke={commodityColors.wheat}
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 5 }}
               animationDuration={1500}
             />
-            <Line 
-              type="monotone" 
-              dataKey="rice" 
-              stroke={commodityColors.rice} 
+            <Line
+              type="monotone"
+              dataKey="rice"
+              stroke={commodityColors.rice}
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 5 }}
               animationDuration={1500}
               animationBegin={200}
             />
-            <Line 
-              type="monotone" 
-              dataKey="cotton" 
-              stroke={commodityColors.cotton} 
+            <Line
+              type="monotone"
+              dataKey="cotton"
+              stroke={commodityColors.cotton}
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 5 }}
               animationDuration={1500}
               animationBegin={400}
             />
-            <Line 
-              type="monotone" 
-              dataKey="soybean" 
-              stroke={commodityColors.soybean} 
+            <Line
+              type="monotone"
+              dataKey="soybean"
+              stroke={commodityColors.soybean}
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 5 }}

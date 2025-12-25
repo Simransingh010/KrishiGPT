@@ -72,7 +72,7 @@ export function TodaysRecommendationCard({
           </div>
           <div>
             <p className={`text-sm font-semibold uppercase tracking-wider ${config.badge} px-3 py-1 rounded-full inline-block mb-2`}>
-              Today's Recommendation
+              Today&apos;s Recommendation
             </p>
             <h2 className={`text-2xl sm:text-3xl font-bold ${config.text} mb-1`}>
               {recommendation.title}

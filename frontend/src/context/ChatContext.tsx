@@ -43,7 +43,7 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | null>(null);
 
 export function ChatProvider({ children }: { children: ReactNode }) {
-  const { userId: authUserId, isAuthenticated } = useAuthContext();
+  const { userId: authUserId } = useAuthContext();
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);

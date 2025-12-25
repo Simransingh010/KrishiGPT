@@ -22,7 +22,7 @@ interface PriceComparisonCardProps {
 
 export function PriceComparisonCard({ commodities, delay = 0, className }: PriceComparisonCardProps) {
   const { isDark } = useTheme();
-  
+
   const chartData = commodities.map(c => ({
     name: c.name,
     "MSP Price": c.currentPrice,
@@ -68,19 +68,19 @@ export function PriceComparisonCard({ commodities, delay = 0, className }: Price
         <ResponsiveContainer width="100%" height="100%" minWidth={200}>
           <BarChart data={chartData} barCategoryGap="20%">
             <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#334155" : "#f1f5f9"} />
-            <XAxis 
-              dataKey="name" 
+            <XAxis
+              dataKey="name"
               tick={{ fontSize: 11, fill: isDark ? "#94a3b8" : "#64748b" }}
               axisLine={{ stroke: isDark ? "#475569" : "#e2e8f0" }}
               tickLine={false}
             />
-            <YAxis 
+            <YAxis
               tick={{ fontSize: 11, fill: isDark ? "#94a3b8" : "#64748b" }}
               axisLine={{ stroke: isDark ? "#475569" : "#e2e8f0" }}
               tickLine={false}
               tickFormatter={(value) => `₹${(value / 1000).toFixed(1)}k`}
             />
-            <Tooltip 
+            <Tooltip
               contentStyle={{
                 backgroundColor: isDark ? "#1e293b" : "#fff",
                 border: `1px solid ${isDark ? "#475569" : "#e2e8f0"}`,
@@ -88,17 +88,17 @@ export function PriceComparisonCard({ commodities, delay = 0, className }: Price
                 fontSize: "12px",
                 color: isDark ? "#f1f5f9" : "#1f2937",
               }}
-              formatter={(value: number) => [`₹${value.toLocaleString("en-IN")}`, ""]}
+              formatter={(value?: number) => [`₹${(value ?? 0).toLocaleString("en-IN")}`, ""]}
             />
-            <Bar 
-              dataKey="MSP Price" 
-              fill="#10B981" 
+            <Bar
+              dataKey="MSP Price"
+              fill="#10B981"
               radius={[4, 4, 0, 0]}
               animationDuration={1000}
             />
-            <Bar 
-              dataKey="Market Price" 
-              fill="#3B82F6" 
+            <Bar
+              dataKey="Market Price"
+              fill="#3B82F6"
               radius={[4, 4, 0, 0]}
               animationDuration={1000}
               animationBegin={200}

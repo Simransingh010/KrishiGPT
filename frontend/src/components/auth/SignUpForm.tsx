@@ -7,13 +7,11 @@
 
 import { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
 export default function SignUpForm() {
     const { signUp, signInWithGoogle, error, clearError } = useAuthContext();
-    const router = useRouter();
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");

@@ -47,7 +47,7 @@ export function AIMessage({ message }: ChatMessageProps) {
                             em: ({ children }) => (
                                 <em className="italic text-gray-600 dark:text-gray-400">{children}</em>
                             ),
-                            code: ({ children, className }: unknown) => {
+                            code: ({ children, className }: { children?: React.ReactNode; className?: string }) => {
                                 const isInline = !className;
                                 if (isInline) {
                                     return (

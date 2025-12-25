@@ -50,7 +50,7 @@ export function QuickInsightsCard({ insights, delay = 0, className }: QuickInsig
         </div>
         <div>
           <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Quick Insights</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Today's recommendations</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Today&apos;s recommendations</p>
         </div>
       </div>
 
@@ -58,7 +58,7 @@ export function QuickInsightsCard({ insights, delay = 0, className }: QuickInsig
       <div className="space-y-3">
         {insights.map((insight, index) => {
           const config = getInsightConfig(insight.type, insight.priority);
-          
+
           return (
             <motion.div
               key={index}

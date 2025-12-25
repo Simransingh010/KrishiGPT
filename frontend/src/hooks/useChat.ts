@@ -74,11 +74,12 @@ export function useChat() {
           setIsLoading(false);
         }
       );
-    } catch (err: any) {
-      if (err.name === "AbortError") {
+    } catch (err: unknown) {
+      const error = err as Error;
+      if (error.name === "AbortError") {
         setMessages((prev) => prev.slice(0, -1));
       } else {
-        setError(err.message || "Something went wrong. Please try again.");
+        setError(error.message || "Something went wrong. Please try again.");
         setMessages((prev) => {
           const updated = [...prev];
           const lastMsg = updated[updated.length - 1];
@@ -86,7 +87,7 @@ export function useChat() {
             updated[updated.length - 1] = {
               ...lastMsg,
               isStreaming: false,
-              answer: `Error: ${err.message || "Failed to get response"}`,
+              answer: `Error: ${error.message || "Failed to get response"}`,
             };
           }
           return updated;
