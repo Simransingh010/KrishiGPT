@@ -21,10 +21,16 @@ export const metadata: Metadata = {
   description: "Your intelligent farming assistant for crops, weather, and MSP prices",
   keywords: ["farming", "agriculture", "AI", "crops", "weather", "MSP", "India"],
   authors: [{ name: "KrishiGPT Team" }],
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "KrishiGPT - AI Agriculture Assistant",
     description: "Your intelligent farming assistant for crops, weather, and MSP prices",
     type: "website",
+    images: ["/logo.png"],
   },
 };
 
