@@ -118,7 +118,6 @@ export function useKrishiChat({ conversationId, userId }: UseKrishiChatParams) {
 
             // Prevent double-send while streaming
             if (isStreamingRef.current) {
-                console.log("[useKrishiChat] Already streaming, ignoring");
                 return;
             }
 

@@ -55,24 +55,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const userId = authUserId || "";
 
   const loadConversations = useCallback(async () => {
-    console.log("[ChatContext] Loading conversations...", { API_BASE_URL, userId });
     try {
       setLoading(true);
       const url = `${API_BASE_URL}/api/conversations/user/${userId}`;
-      console.log("[ChatContext] Fetching:", url);
       const res = await fetch(url);
-      console.log("[ChatContext] Response status:", res.status);
       if (!res.ok) {
         const errorText = await res.text();
-        console.error("[ChatContext] Load conversations failed:", res.status, errorText);
         throw new Error(`Failed to load conversations: ${res.status} ${errorText}`);
       }
       const data = await res.json();
-      console.log("[ChatContext] Loaded conversations:", data.length);
       setConversations(data);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to load conversations";
-      console.error("[ChatContext] Error loading conversations:", err);
       setError(message);
     } finally {
       setLoading(false);
@@ -80,12 +74,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   const createConversation = useCallback(async (title?: string): Promise<Conversation | null> => {
-    console.log("[ChatContext] Creating conversation...", { API_BASE_URL, userId, title });
     try {
       setLoading(true);
       const url = `${API_BASE_URL}/api/conversations`;
       const body = JSON.stringify({ userId, title });
-      console.log("[ChatContext] POST:", url, body);
 
       const res = await fetch(url, {
         method: "POST",
@@ -93,15 +85,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         body,
       });
 
-      console.log("[ChatContext] Response status:", res.status);
       if (!res.ok) {
         const errorText = await res.text();
-        console.error("[ChatContext] Create conversation failed:", res.status, errorText);
         throw new Error(`Failed to create conversation: ${res.status} ${errorText}`);
       }
 
       const data = await res.json();
-      console.log("[ChatContext] Created conversation:", data);
 
       const newConv: Conversation = {
         id: data.id,
@@ -115,7 +104,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       return newConv;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to create conversation";
-      console.error("[ChatContext] Error creating conversation:", err);
       setError(message);
       return null;
     } finally {

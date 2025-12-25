@@ -24,31 +24,28 @@ function useFetch<T>(fetcher: () => Promise<T>, deps: unknown[] = []) {
     const [data, setData] = useState<T | null>(null);
     const [status, setStatus] = useState<Status>("idle");
     const [error, setError] = useState<string | null>(null);
-    const mounted = useRef(true);
+    const fetcherRef = useRef(fetcher);
+
+    // Keep fetcher ref updated without triggering re-renders
+    fetcherRef.current = fetcher;
 
     const refetch = useCallback(async () => {
         setStatus("loading");
         setError(null);
         try {
-            const result = await fetcher();
-            if (mounted.current) {
-                setData(result);
-                setStatus("success");
-            }
+            const result = await fetcherRef.current();
+            setData(result);
+            setStatus("success");
         } catch (err) {
-            if (mounted.current) {
-                setError(err instanceof Error ? err.message : "Failed to fetch");
-                setStatus("error");
-            }
+            setError(err instanceof Error ? err.message : "Failed to fetch");
+            setStatus("error");
         }
-    }, [fetcher]);
+    }, []);
 
     useEffect(() => {
-        mounted.current = true;
         refetch();
-        return () => { mounted.current = false; };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [...deps, refetch]);
+    }, deps);
 
     return { data, status, error, refetch };
 }

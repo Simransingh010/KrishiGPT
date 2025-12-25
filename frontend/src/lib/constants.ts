@@ -6,11 +6,6 @@
 // API Configuration
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-// Validate API URL at build time
-if (typeof window === "undefined" && !process.env.NEXT_PUBLIC_API_URL) {
-    console.warn("[Config] NEXT_PUBLIC_API_URL not set, using default: http://localhost:8000");
-}
-
 // API Endpoints
 export const API_ENDPOINTS = {
     // Conversations

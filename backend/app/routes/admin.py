@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime, date
 import logging
+import asyncio
 
 from ..db.supabase import get_supabase
 
@@ -472,10 +473,25 @@ async def get_admin_stats():
     """Get admin dashboard statistics"""
     db = get_supabase()
     
-    crops = db.table("crops").select("id", count="exact").eq("is_active", True).execute()
-    prices = db.table("crop_prices").select("id", count="exact").execute()
-    insights = db.table("insights").select("id", count="exact").execute()
-    published = db.table("insights").select("id", count="exact").eq("is_published", True).execute()
+    # Run all queries in parallel for better performance
+    async def get_crops_count():
+        return db.table("crops").select("id", count="exact").eq("is_active", True).execute()
+    
+    async def get_prices_count():
+        return db.table("crop_prices").select("id", count="exact").execute()
+    
+    async def get_insights_count():
+        return db.table("insights").select("id", count="exact").execute()
+    
+    async def get_published_count():
+        return db.table("insights").select("id", count="exact").eq("is_published", True).execute()
+    
+    crops, prices, insights, published = await asyncio.gather(
+        get_crops_count(),
+        get_prices_count(),
+        get_insights_count(),
+        get_published_count()
+    )
     
     return {
         "total_crops": crops.count,

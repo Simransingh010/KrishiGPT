@@ -69,9 +69,7 @@ export function useAuth() {
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (event: AuthChangeEvent, session: Session | null) => {
-                console.log("[Auth] State change:", event);
-
+            (_event: AuthChangeEvent, session: Session | null) => {
                 if (session?.user) {
                     dispatch({ type: "AUTHENTICATED", payload: { user: session.user, session } });
                 } else {
