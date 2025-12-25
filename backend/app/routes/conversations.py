@@ -179,7 +179,7 @@ async def delete_conversation(conversation_id: str, request: DeleteConversationR
             raise HTTPException(status_code=403, detail="Not authorized")
         
         # Soft delete
-        response = supabase.table("conversations") \
+        supabase.table("conversations") \
             .update({"deleted_at": datetime.utcnow().isoformat()}) \
             .eq("id", conversation_id) \
             .execute()

@@ -6,7 +6,7 @@ For production, use Redis-based solution.
 
 import time
 from collections import defaultdict
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple
 from functools import wraps
 from fastapi import HTTPException, Request
 import logging

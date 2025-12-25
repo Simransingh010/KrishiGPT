@@ -1,3 +1,4 @@
+# ruff: noqa: E402
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
@@ -88,7 +89,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Import and include routers
+# Import and include routers (after app is created)
 from .routes.conversations import router as conversations_router
 from .routes.messages import router as messages_router
 from .routes.krishi import router as krishi_router
@@ -101,15 +102,15 @@ app.include_router(krishi_router)
 app.include_router(dashboard_router)
 app.include_router(admin_router)
 
-# Pydantic models with validation
-from .utils.validation import ValidatedQuestionRequest
 
 class QuestionRequest(BaseModel):
     question: str
 
+
 class AnswerResponse(BaseModel):
     answer: str
     source: str = "Gemini AI"
+
 
 # Initialize Gemini
 api_key = os.getenv("GEMINI_API_KEY")
@@ -125,13 +126,16 @@ else:
     except Exception as e:
         logger.error(f"Error configuring Gemini: {e}")
 
+
 @app.get("/")
 async def root():
     return {"message": "🌾 KrishiGPT API - AI Assistant for Farmers", "status": "running"}
 
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "gemini_configured": model is not None}
+
 
 async def generate_stream(question: str):
     """Generate streaming response from Gemini API"""
@@ -196,6 +200,7 @@ async def generate_stream(question: str):
         error_data = json.dumps({"error": str(e), "done": True}) + "\n"
         yield f"data: {error_data}\n\n"
 
+
 @app.post("/ask")
 async def ask_question(request: Request, body: QuestionRequest):
     """Stream AI response for farming questions"""
@@ -231,6 +236,7 @@ async def ask_question(request: Request, body: QuestionRequest):
     except Exception as e:
         logger.error(f"Error processing question: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
 
 if __name__ == "__main__":
     import uvicorn

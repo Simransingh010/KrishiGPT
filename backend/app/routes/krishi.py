@@ -6,7 +6,7 @@ New routes for the KrishiGPT system with forms and tools.
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 import logging
 
 from ..krishi.controller import get_krishi_controller
@@ -257,7 +257,7 @@ async def send_krishi_message_stream(request: KrishiMessageRequest):
                                 accumulated,
                                 len(accumulated.split())
                             )
-                    except:
+                    except Exception:
                         pass
         
         return StreamingResponse(

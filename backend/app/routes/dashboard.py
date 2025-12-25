@@ -4,7 +4,7 @@ Provides weather, prices, and farm insights for the dashboard.
 Now pulls real data from Supabase database.
 """
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Query
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta, date
@@ -254,13 +254,11 @@ async def fetch_weather_data(lat: float, lon: float, location_name: str) -> Weat
             weather_desc = current_data.get("weather", [{}])[0].get("description", "clear sky")
             condition = WEATHER_CONDITIONS.get(weather_desc, "Partly Cloudy")
             
-            # Get icon for condition
-            main_weather = current_data.get("weather", [{}])[0].get("main", "Clear").lower()
+            # Get icon for condition (weather_desc already captured condition)
             
             # Parse forecast - get one entry per day
             forecast_list = []
             seen_days = set()
-            today = datetime.now()
             
             for item in forecast_data.get("list", [])[:40]:
                 dt = datetime.fromtimestamp(item["dt"])

@@ -3,7 +3,7 @@ KrishiGPT MCP Tools - Continued
 Additional agricultural tools.
 """
 
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from .types import FarmContext, ConfidenceLevel
 from .types_continued import ToolResult, ToolDefinition, ToolParameter, FormSchema, FormField, FormFieldOption
 from .safety import SafetyValidator
@@ -414,8 +414,9 @@ def get_tool(name: str) -> Optional[KrishiMCPTool]:
     return AVAILABLE_TOOLS.get(name)
 
 
-# Register all tools
-from .tools import DiagnoseCropIssueTool, RecommendFertilizerTool
+# Register all tools - imports at end to avoid circular imports
+# ruff: noqa: E402
+from .tools import DiagnoseCropIssueTool, RecommendFertilizerTool  # noqa: E402
 
 register_tool(DiagnoseCropIssueTool())
 register_tool(RecommendFertilizerTool())

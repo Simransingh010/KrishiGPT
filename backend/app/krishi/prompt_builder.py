@@ -4,7 +4,7 @@ Centralized prompt construction with context injection.
 """
 
 from typing import List, Dict, Optional
-from .types import FarmContext, FarmMessage
+from .types import FarmContext
 
 
 class KrishiPromptBuilder:

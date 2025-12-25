@@ -227,7 +227,7 @@ async def send_message_stream(request: SendMessageRequest):
                                 accumulated,
                                 len(accumulated.split())
                             )
-                    except:
+                    except Exception:
                         pass
         
         return StreamingResponse(

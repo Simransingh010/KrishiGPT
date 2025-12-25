@@ -10,8 +10,7 @@ from typing import Optional, List, Dict, Any, AsyncGenerator
 import google.generativeai as genai
 import os
 
-from .types import FarmContext, FarmMessage, ConfidenceLevel, CropStage, Season, SoilType
-from .types_continued import KrishiResponse, FormSchema, ToolResult
+from .types import FarmContext, ConfidenceLevel, CropStage, SoilType
 from .prompt_builder import KrishiPromptBuilder
 from .safety import SafetyValidator
 from .forms import get_form, KRISHI_FORMS
@@ -107,7 +106,7 @@ class KrishiGPTController:
                 return {
                     "type": "form_request",
                     "form": form.model_dump(),
-                    "message": f"I need a bit more information to help you properly.",
+                    "message": "I need a bit more information to help you properly.",
                     "confidence": ConfidenceLevel.LOW.value
                 }
         

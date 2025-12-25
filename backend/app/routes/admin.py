@@ -3,11 +3,10 @@ Admin API Routes
 CRUD operations for crops, prices, and insights management.
 """
 
-from fastapi import APIRouter, HTTPException, Query, Depends
-from pydantic import BaseModel, Field
+from fastapi import APIRouter, HTTPException, Query
+from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime, date
-from uuid import UUID
 import logging
 
 from ..db.supabase import get_supabase

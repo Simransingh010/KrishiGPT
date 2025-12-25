@@ -3,7 +3,7 @@ KrishiGPT MCP Tools (FarmActions)
 Agricultural tools with safety validation.
 """
 
-from typing import Dict, Any, Optional, List, Callable
+from typing import Dict, Any, Optional, List
 from abc import ABC, abstractmethod
 from .types import FarmContext, ConfidenceLevel
 from .types_continued import ToolResult, ToolDefinition, ToolParameter, FormSchema, FormField, FormFieldOption

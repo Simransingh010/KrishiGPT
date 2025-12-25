@@ -87,7 +87,7 @@ async def setup_test_user():
             return {"message": "Test user already exists", "userId": test_user_id}
         
         # Create test user
-        response = supabase.table("users").insert({
+        supabase.table("users").insert({
             "id": test_user_id,
             "email": "test@krishiai.com",
             "username": "testfarmer",
