@@ -21,6 +21,15 @@ export default function LoginForm() {
     const [status, setStatus] = useState<FormStatus>("idle");
     const [localError, setLocalError] = useState<string | null>(null);
 
+    // Demo credentials
+    const DEMO_EMAIL = "demo@krishigpt.com";
+    const DEMO_PASSWORD = "demo123456";
+
+    const handleDemoLogin = () => {
+        setEmail(DEMO_EMAIL);
+        setPassword(DEMO_PASSWORD);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus("submitting");
@@ -137,6 +146,24 @@ export default function LoginForm() {
                         Sign up
                     </a>
                 </p>
+
+                {/* Demo Login */}
+                <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <p className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-2">
+                        🎯 Demo Account
+                    </p>
+                    <p className="text-xs text-amber-700 dark:text-amber-400 mb-3">
+                        Email: demo@krishigpt.com<br />
+                        Password: demo123456
+                    </p>
+                    <button
+                        type="button"
+                        onClick={handleDemoLogin}
+                        className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                        Fill Demo Credentials
+                    </button>
+                </div>
             </div>
         </div>
     );
