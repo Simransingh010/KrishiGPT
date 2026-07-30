@@ -48,6 +48,15 @@ export default function KrishiChatWindow() {
         }
     }, [currentConversation?.id, contextMessages, setMessages, clearMessages]);
 
+    // Check for pending question from landing page
+    useEffect(() => {
+        const pendingQuestion = sessionStorage.getItem('pendingQuestion');
+        if (pendingQuestion && currentConversation?.id) {
+            sessionStorage.removeItem('pendingQuestion');
+            handleSubmit(pendingQuestion);
+        }
+    }, [currentConversation?.id]);
+
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, [krishiMessages, status]);

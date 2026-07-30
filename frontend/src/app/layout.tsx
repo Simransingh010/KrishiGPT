@@ -18,8 +18,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "KrishiGPT - Agriculture Assistant",
-  description: "Your intelligent farming assistant for crops, weather, and MSP prices",
-  keywords: ["farming", "agriculture", "AI", "crops", "weather", "MSP", "India"],
+  description:
+    "Your intelligent farming assistant for crops, weather, and MSP prices",
+  keywords: [
+    "farming",
+    "agriculture",
+    "AI",
+    "crops",
+    "weather",
+    "MSP",
+    "India",
+  ],
   authors: [{ name: "KrishiGPT Team" }],
   icons: {
     icon: "/logo.png",
@@ -28,7 +37,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "KrishiGPT - AI Agriculture Assistant",
-    description: "Your intelligent farming assistant for crops, weather, and MSP prices",
+    description:
+      "Your intelligent farming assistant for crops, weather, and MSP prices",
     type: "website",
     images: ["/logo.png"],
   },
@@ -41,15 +51,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ErrorBoundary>
           <ThemeProvider>
             <AuthProvider>
-              <ToastProvider>
-                {children}
-              </ToastProvider>
+              <ToastProvider>{children}</ToastProvider>
             </AuthProvider>
           </ThemeProvider>
         </ErrorBoundary>
